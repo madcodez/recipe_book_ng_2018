@@ -1,43 +1,61 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import {Recipe } from '../recipe.modal';
 import { RecipeService } from '../recipe.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
+import { Store } from '@ngrx/store';
+import * as  recipeStore from '../store';
+import * as fromStore from '../../store/app.reducer' 
+import { Observable } from 'rxjs/Observable';
+import * as ingredientAction from '../../shopping-list/store';
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-recipe-detail',
   templateUrl: './recipe-detail.component.html',
-  styleUrls: ['./recipe-detail.component.css']
+  styleUrls: ['./recipe-detail.component.css'],
+//  changeDetection : ChangeDetectionStrategy.OnPush,
 })
-export class RecipeDetailComponent implements OnInit {
-  recipe : Recipe ; 
+export class RecipeDetailComponent implements OnInit , OnDestroy {
+
+  recipes : Observable<{recipes :Recipe[]}> ; 
+  recipe : Recipe
   index : number ;
-  
-  constructor(private recpieService : RecipeService , private route : ActivatedRoute, private router : Router, private authService : AuthService ) {
+  authState$ : Observable<any>
+  subscription: Subscription
+  constructor(private recpieService : RecipeService , 
+    private route : ActivatedRoute, 
+    private router : Router,
+    private authService : AuthService,private store : Store<recipeStore.FeatureState> ) {
     
    }
      
   ngOnInit() {
    
-    this.route.params.subscribe((params : Params)=>
+    this.subscription = this.route.params.subscribe((params : Params)=>
                                   {
                                   this.index = +params['id'];
-                                  this.recipe = this.recpieService.getRecipe(this.index) ;
+                                  this.store.select('recipes').take(1).subscribe(recipeState => this.recipe = recipeState.recipes[this.index]);
+                                 
                                   }
                               );
     
-  
+    this.authState$ = this.store.select('auth'); 
   }
   addtoShoppinglist(){
     
-    this.recpieService.addIngtoShopList(this.recipe.ingredients);
+   this.store.dispatch(new ingredientAction.AddIngredients(this.recipe.ingredients))
 
   }
   onDeleteRecipe(){
-    this.recpieService.deleteRecipe(this.index);
-    this.router.navigate(['../'],{relativeTo:this.route});
+   this.store.dispatch(new recipeStore.DeleteRecipes(this.index) )
+   this.router.navigate(['recipes']);
   }
   onEditRecipe(){
    // this.router.navigate(['edit',{relativeTo : this.route}]);
    this.router.navigate(['../',this.index,'edit'],{relativeTo : this.route});
+  }
+  ngOnDestroy(): void {
+ this.subscription.unsubscribe();
   }
 }

@@ -14,7 +14,8 @@ export class DataStorageService {
     }
 
     storeRecipes(){
-        return this.http.put('https://ng-recipe-book-cdbb8.firebaseio.com/recipes.json?auth='+ this.authService.token,this.recipeService.getRecipes());
+        return this.http.put('https://ng-recipe-book-cdbb8.firebaseio.com/recipes.json?auth='+
+         this.authService.token,this.recipeService.getRecipes());
     }
 
     getRecipes(){

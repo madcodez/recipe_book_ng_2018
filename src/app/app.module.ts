@@ -1,12 +1,13 @@
 
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import {StoreModule} from '@ngrx/store'
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
-import { AppRouteConfig } from './app-route-config.module';
+
 
 
 import { HeaderComponent } from './core/header/header.component';
@@ -28,6 +29,10 @@ import { AuthService } from './auth/auth.service';
 import { AuthGuard } from './auth/authguard.service';
 import { AuthModule } from './auth/auth.module';
 import { CoreModule } from './core/core.module';
+import { reducer } from './store/app.reducer';
+import { AppRouteConfigModule } from './app-route-config.module';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from './auth/store/effects/auth.effects';
 
 
 
@@ -42,13 +47,22 @@ import { CoreModule } from './core/core.module';
     BrowserModule,
     FormsModule,
     HttpModule,
-    RecipesModule,
+    CoreModule,
+    AuthModule,
     SharedModule,
     ShoppingListModule,
-    AuthModule,
-    CoreModule
+    
+    AppRouteConfigModule,
+   
+    StoreModule.forRoot(reducer),
+    EffectsModule.forRoot([AuthEffects]),
+    StoreDevtoolsModule.instrument()
   ],
   
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule { 
+  constructor(){
+    console.log("app module");
+  }
+}

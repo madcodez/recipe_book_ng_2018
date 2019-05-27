@@ -7,16 +7,18 @@ import { RecipeService } from '../recipes/recipe.service';
 import { DataStorageService } from '../shared/datastorage.service';
 import { AuthService } from '../auth/auth.service';
 import { AuthGuard } from '../auth/authguard.service';
-import { AppRouteConfig } from '../app-route-config.module';
+import { AppRouteConfigModule } from '../app-route-config.module';
 import { PagenotfoundComponent } from '../pagenotfound/pagenotfound.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
-    AppRouteConfig
+    AppRouteConfigModule,
+    SharedModule,
   ],
   declarations: [HomeComponent, HeaderComponent,PagenotfoundComponent],
-  exports :[HeaderComponent,AppRouteConfig],
+  exports :[HeaderComponent,AppRouteConfigModule],
   providers: [ShoppingListService, RecipeService, DataStorageService, AuthService, AuthGuard],
 })
 export class CoreModule { }

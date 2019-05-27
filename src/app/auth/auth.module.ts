@@ -14,5 +14,7 @@ import { SignupComponent } from "./signup/signup.component";
     imports : [CommonModule,FormsModule,AuthRouteConfig]
 })
 export class AuthModule {
-
+ constructor(){
+   console.log("Auth Module")
+ }
 }

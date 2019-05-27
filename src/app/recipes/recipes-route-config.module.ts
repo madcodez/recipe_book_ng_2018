@@ -1,5 +1,6 @@
 import { Routes, RouterModule } from "@angular/router";
 import { RecipesComponent } from "./recipes.component";
+import { PreloadAllModules } from '@angular/router';
 import { RecipesStartComponent } from "./recipes-start/recipes-start.component";
 import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
 import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
@@ -10,7 +11,7 @@ import { NgModule } from "@angular/core";
 
 const recipeRoutes : Routes =[
     {
-        path: 'recipes', component: RecipesComponent, children: [
+        path: '', component: RecipesComponent, children: [
           
           { path: '', component: RecipesStartComponent },
           { path: 'new', component: RecipeEditComponent ,canActivate: [AuthGuard]},
@@ -23,7 +24,10 @@ const recipeRoutes : Routes =[
 
 @NgModule({
     imports:[RouterModule.forChild(recipeRoutes)],
-    exports:[RouterModule]
+    exports:[RouterModule],
+    providers: [
+        AuthGuard
+      ]
 })
 export class RecipesRouteConfig{
 
